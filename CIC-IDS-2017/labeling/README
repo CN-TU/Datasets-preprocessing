@@ -1,0 +1,8 @@
+labeling_CCA.py:
+used for the CAIA_Consensus_AGM feature vector
+
+labeling_rules_agm.py:
+used for the AGM feature vector
+
+labeling_rules_all.py:
+used for CAIA, Consensus or TA feature vectors
