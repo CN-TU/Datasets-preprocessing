@@ -5,7 +5,7 @@
 # Copyright (C) 2019, Institute of Telecommunications, TU Wien
 #
 # Name        : ML.py
-# Description : A generic script for parameters tunning and ML analysis for datasets
+# Description : parameters tunning and ML analysis for datasets
 # Author      : Fares Meghdouri
 #
 # Notes : additionnaly to this script, the training data (under x_training.csv) 
@@ -28,6 +28,15 @@ from evolutionary_search import EvolutionaryAlgorithmSearchCV
 
 #
 
+
+#******************************************************************************
+
+# ignore sklearn warnings
+def warn(*args, **kwargs):
+    pass
+import warnings
+warnings.warn = warn
+
 #******************************************************************************
 
 VECTOR_NAME  = "mega" # CHANGE THIS TO YOUR FEATURE VECTOR
@@ -35,6 +44,7 @@ DATASET_NAME = ""
 SEED         = 2019
 SCORING 	 = ['accuracy', 'precision', 'recall', 'f1', 'roc_auc']
 TUNE_ONLY 	 = False
+features     = []
 
 #******************************************************************************
 
@@ -54,10 +64,12 @@ def read_data():
 	y_train = training['Label']
 	y_test  = testing['Label']
 
+	features = ",".join(list(X_train))
+
 	del training
 	del testing
 
-	return X_train, X_test, y_train, y_test
+	return X_train, X_test, y_train, y_test, features
 
 
 def min_max_scaling(X_train, X_test):
@@ -80,7 +92,7 @@ def standard_scaling(X_train, X_test):
 
 	return X_train, X_test
 
-def feature_importance(_with=False, pca, X_train, X_test, y_train, min_samples_leaf=1, max_depth=15):
+def feature_importance(pca, X_train, X_test, y_train, min_samples_leaf, max_depth, _with=False,):
 	# DT to extract feature importance
 	from sklearn.tree import DecisionTreeClassifier
 	if _with:
@@ -92,6 +104,8 @@ def feature_importance(_with=False, pca, X_train, X_test, y_train, min_samples_l
 	dtree.fit(X_train,y_train)
 
 	feat_imp = np.multiply(dtree.feature_importances_,100)
+	file.write(features + "\n")
+	file.write("\n")
 	feat_imp.tofile(file, sep=",", format="%.3f")
 	file.write("\n")
 	file.close()
@@ -101,7 +115,7 @@ def feature_importance(_with=False, pca, X_train, X_test, y_train, min_samples_l
 	X_train = np.delete(X_train, indices[0], axis=1)
 	X_test  = np.delete(X_test, indices[0], axis=1)
 
-	if _write:
+	if _with:
 		file = open("feature_selection_with_tuning_{}.csv".format(pca),"w")
 	else:
 		file = open("feature_selection_with_tuning_{}.csv".format(pca),"w")
@@ -145,37 +159,43 @@ def output_report(algo, y_train, pred_train, y_test, pred, sc_tr, sc_ts):
 	text_file.write('-------------TRAINING--------------------\n')
 	text_file.write('confusion matrix\n')
 	cm   = confusion_matrix(y_train,pred_train)
-	text_file.write(cm + "\n")
-	text_file.write(classification_report(y_train,pred_train) + "\n")
-	text_file.write('roc_auc:\n')
+	text_file.write("{}".format(cm))
+	text_file.write('\nclassification report:\n')
+	text_file.write(classification_report(y_train,pred_train))
+	text_file.write('\nroc_auc:\n')
 	rauc = roc_auc_score(y_train, pred_train)
-	text_file.write(rauc + "\n")
+	text_file.write("{}".format(rauc))
+	text_file.write("\n")
 	acc  = "%0.3f (+/- %0.3f)" % (sc_tr['test_accuracy'].mean(), sc_tr['test_accuracy'].std() * 2)
 	prec = "%0.3f (+/- %0.3f)" % (sc_tr['test_precision'].mean(), sc_tr['test_precision'].std() * 2)
 	rec  = "%0.3f (+/- %0.3f)" % (sc_tr['test_recall'].mean(), sc_tr['test_recall'].std() * 2)
 	f1   = "%0.3f (+/- %0.3f)" % (sc_tr['test_f1'].mean(), sc_tr['test_f1'].std() * 2)
 	rauc = "%0.3f (+/- %0.3f)" % (sc_tr['test_roc_auc'].mean(), sc_tr['test_roc_auc'].std() * 2)
-	text_file.write("%s, SVM (training) - Acc: %s, Prec: %s, Rec: %s, F1: %s, Roc-Auc:%s\n" % (VECTOR_NAME, acc, prec, rec, f1, rauc))
+	text_file.write("%s, %s (training) - Acc: %s, Prec: %s, Rec: %s, F1: %s, Roc-Auc:%s\n" % (VECTOR_NAME, algo, acc, prec, rec, f1, rauc))
 
 
 	text_file.write('\n-------------TEST--------------------\n')
 	text_file.write('confusion matrix\n')
 	cm   = confusion_matrix(y_test,pred)
-	text_file.write(cm + "\n")
-	text_file.write(classification_report(y_test,pred) + "\n")
-	text_file.write('roc_auc:\n')
+	text_file.write("{}".format(cm))
+	text_file.write('\nclassification report:\n')
+	text_file.write(classification_report(y_test,pred))
+	text_file.write('\nroc_auc:\n')
 	rauc = roc_auc_score(y_test, pred)
-	text_file.write(rauc + "\n")
+	text_file.write("{}".format(rauc))
+	text_file.write("\n")
 	acc  = "%0.3f (+/- %0.3f)" % (sc_ts['test_accuracy'].mean(), sc_ts['test_accuracy'].std() * 2)
 	prec = "%0.3f (+/- %0.3f)" % (sc_ts['test_precision'].mean(), sc_ts['test_precision'].std() * 2)
 	rec  = "%0.3f (+/- %0.3f)" % (sc_ts['test_recall'].mean(), sc_ts['test_recall'].std() * 2)
 	f1   = "%0.3f (+/- %0.3f)" % (sc_ts['test_f1'].mean(), sc_ts['test_f1'].std() * 2)
 	rauc = "%0.3f (+/- %0.3f)" % (sc_ts['test_roc_auc'].mean(), sc_ts['test_roc_auc'].std() * 2)
-	text_file.write("%s, SVM (test) - Acc: %s, Prec: %s, Rec: %s, F1: %s, Roc-Auc:%s\n" % (VECTOR_NAME, acc, prec, rec, f1, rauc))
+	text_file.write("%s, %s (test) - Acc: %s, Prec: %s, Rec: %s, F1: %s, Roc-Auc:%s\n" % (VECTOR_NAME, algo, acc, prec, rec, f1, rauc))
 
 
 def RF_DT(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test, tune_only=False):
 	from sklearn.ensemble import RandomForestClassifier
+	from sklearn.tree import DecisionTreeClassifier
+	from sklearn.model_selection import cross_validate
 	min_samples_leaf_range = np.round(np.linspace(1, 20, 20)).astype(int)
 	max_depth_range 	   = np.round(np.linspace(1, 15, 15)).astype(int)
 	param_dist 			   = dict(min_samples_leaf=min_samples_leaf_range, max_depth=max_depth_range)
@@ -201,21 +221,35 @@ def RF_DT(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_te
 	file.close()
 
 	if not tune_only:
-		# apply best parameters
-		rfc = RandomForestClassifier(n_estimators     = int((1+num_features/2)), 
+		# apply best parameters RF
+		rfc = RandomForestClassifier(n_estimators    = int((1+num_features/2)), 
 									min_samples_leaf = rnds.best_estimator_.min_samples_leaf, 
-									max_depth        = rnds.best_estimator_.max_depth)
+									max_depth        = rnds.best_estimator_.max_depth,
+									random_state     = SEED)
 		rfc.fit(X_train_pca,y_train)
 		sc_tr      = cross_validate(rfc, X_train_pca, y_train, scoring=SCORING, cv=5, return_train_score=False)
 		sc_ts      = cross_validate(rfc, X_test_pca, y_test, scoring=SCORING, cv=5, return_train_score=False)
-		pred       = rf.predict(X_test_pca)
-		pred_train = rf.predict(X_train_pca)
+		pred       = rfc.predict(X_test_pca)
+		pred_train = rfc.predict(X_train_pca)
 
-		output_report(y_train, pred_train, y_test, pred, sc_tr, sc_ts)
+		output_report("RF", y_train, pred_train, y_test, pred, sc_tr, sc_ts)
+
+		# apply best parameters DT
+		dtc = DecisionTreeClassifier(min_samples_leaf = rnds.best_estimator_.min_samples_leaf, 
+									 max_depth        = rnds.best_estimator_.max_depth,
+									 random_state     = SEED)
+		dtc.fit(X_train_pca,y_train)
+		sc_tr      = cross_validate(dtc, X_train_pca, y_train, scoring=SCORING, cv=5, return_train_score=False)
+		sc_ts      = cross_validate(dtc, X_test_pca, y_test, scoring=SCORING, cv=5, return_train_score=False)
+		pred       = dtc.predict(X_test_pca)
+		pred_train = dtc.predict(X_train_pca)
+
+		output_report("DT", y_train, pred_train, y_test, pred, sc_tr, sc_ts)
 
 
 def SVM(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test, tune_only=False):
 	from sklearn.svm import SVC
+	from sklearn.model_selection import cross_validate
 	C_range     = np.linspace(1, 10, 101)
 	gamma_range = np.linspace(3000, 4000, 100)
 	param_dist  = dict(gamma=gamma_range, C=C_range)
@@ -241,7 +275,7 @@ def SVM(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test
 
 	if not tune_only:
 		# apply best parameters
-		svc = SVC(max_iter=200, C=rnds.best_estimator_.C, gamma=rnds.best_estimator_.gamma)
+		svc = SVC(max_iter=200, C=rnds.best_estimator_.C, gamma=rnds.best_estimator_.gamma, random_state=SEED)
 		svc.fit(X_train_pca,y_train)
 		sc_tr      = cross_validate(svc, X_train_pca, y_train, scoring=SCORING, cv=5, return_train_score=False)
 		sc_ts      = cross_validate(svc, X_test_pca, y_test, scoring=SCORING, cv=5, return_train_score=False)
@@ -252,6 +286,8 @@ def SVM(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test
 
 def NN(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test, tune_only=False):
 	from sklearn.neural_network import MLPClassifier
+	from sklearn.model_selection import cross_validate
+	num_features = len(X_train_little[0])
 	# prepare parameter grid
 	alpha_range = np.linspace(0.005, 0.015, 50)
 	learning_rate_range = np.linspace(0.01, 0.07, 50)
@@ -299,7 +335,8 @@ def NN(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test,
 							learning_rate_init=rnds.best_estimator_.learning_rate_init,
 							epsilon=rnds.best_estimator_.epsilon,
 							beta_1=rnds.best_estimator_.beta_1,
-							beta_2=rnds.best_estimator_.beta_2)
+							beta_2=rnds.best_estimator_.beta_2,
+							random_state=SEED)
 		mlp.fit(X_train_pca,y_train)
 		sc_tr      = cross_validate(mlp, X_train_pca, y_train, scoring=SCORING, cv=5, return_train_score=False)
 		sc_ts      = cross_validate(mlp, X_test_pca, y_test, scoring=SCORING, cv=5, return_train_score=False)
@@ -311,9 +348,10 @@ def NN(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test,
 
 def NB(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test, tune_only=False):
 	from sklearn.naive_bayes import BernoulliNB
+	from sklearn.model_selection import cross_validate
 	alpha_range = np.linspace(0, 500, 500)
 	param_dist  = dict(alpha=alpha_range)
-	cv 			= StratifiedShuffleSplit(n_splits=5, test_size=0.2, random_state=SEED)
+	cv 			= StratifiedShuffleSplit(n_splits=5, test_size=0.2)
 	rnds 	    = EvolutionaryAlgorithmSearchCV(estimator     	    = BernoulliNB(),
 												params              = param_dist,
 												scoring             = "f1",
@@ -345,6 +383,7 @@ def NB(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test,
 
 def LR2(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test, tune_only=False):
 	from sklearn.linear_model import LogisticRegression
+	from sklearn.model_selection import cross_validate
 	C_range    = np.linspace(1, 50, 50)
 	tol_range  = np.linspace(0.001, 0.01, 50)
 	param_dist = dict(tol=tol_range, C=C_range)
@@ -370,7 +409,7 @@ def LR2(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test
 
 	if not tune_only:
 		# apply best parameters
-		l2r = LogisticRegression(C=rnds.best_estimator_.C, tol=rnds.best_estimator_.tol)
+		l2r = LogisticRegression(C=rnds.best_estimator_.C, tol=rnds.best_estimator_.tol, random_state=SEED)
 		l2r.fit(X_train_pca,y_train)
 		sc_tr      = cross_validate(l2r, X_train_pca, y_train, scoring=SCORING, cv=5, return_train_score=False)
 		sc_ts      = cross_validate(l2r, X_test_pca, y_test, scoring=SCORING, cv=5, return_train_score=False)
@@ -381,6 +420,7 @@ def LR2(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test
 
 
 def main():
+	global features
 	###### Preprocessing #######
 	try:
 		print('-->> Loading training and test datasets...')
@@ -390,10 +430,10 @@ def main():
 		print("Make sure to include your training and testing data under the same directory and, change the name in the script parameters")
 		exit()
 
-	X_train, X_test = min_max_scaling()
+	X_train, X_test = min_max_scaling(X_train, X_test)
 	print('-->> Data scaled.')
 	
-	X_train, X_test = feature_importance(_with=False, pca="", X_train, X_test, y_train)
+	X_train, X_test = feature_importance("", X_train, X_test, y_train, 0, 0, _with=False)
 	print('-->> Feature selection done.')
 
 	X_train, X_test = standard_scaling(X_train, X_test)
@@ -402,7 +442,7 @@ def main():
 	X_train_pca, X_test_pca = _pca(X_train, X_test)
 	print('-->> Space transformation based on PCA')
 
-	X_train_pca, X_test_pca = feature_importance(_with=False, pca="after_pca", X_train_pca, X_test_pca, y_train)
+	X_train_pca, X_test_pca = feature_importance("after_pca", X_train_pca, X_test_pca, y_train , 0, 0, _with=False)
 	print('-->> Feature selection after PCA done.')
 
 	reducing_rate = 0.90
@@ -411,39 +451,38 @@ def main():
 
 	###### Tuning and Analysis #######
 	print("*"*80)
-	from sklearn.model_selection import cross_validate
-
+	
 	try:
 		RF_DT(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test, tune_only=TUNE_ONLY)
 	except Exception as e:
-		print("RF_DT issues: {}".format(e))
+		print("-->> RF_DT issues: {}".format(e))
 
 	print("*"*80)
 	
 	try:
 		SVM(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test, tune_only=TUNE_ONLY)
 	except Exception as e:
-		print("SVM issues: {}".format(e))
+		print("-->> SVM issues: {}".format(e))
 
 	print("*"*80)
 	
 	try:
 		NN(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test, tune_only=TUNE_ONLY)
 	except Exception as e:
-		print("NN issues: {}".format(e))
+		print("-->> NN issues: {}".format(e))
 
 	print("*"*80)
 	
 	try:
 		NB(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test, tune_only=TUNE_ONLY)
 	except Exception as e:
-		print("NB issues: {}".format(e))
+		print("-->> NB issues: {}".format(e))
 
 	print("*"*80)
 	
 	try:
 		LR2(X_train_little, y_train_little, X_train_pca, X_test_pca, y_train, y_test, tune_only=TUNE_ONLY)
 	except Exception as e:
-		print("LR2 issues: {}".format(e))
+		print("-->> LR2 issues: {}".format(e))
 
 main()
