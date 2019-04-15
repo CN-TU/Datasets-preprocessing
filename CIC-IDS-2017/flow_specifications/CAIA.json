@@ -4,7 +4,7 @@
     "flows": [
       {
         "features": [
-		    "flowStartSeconds",
+		    "flowStartMilliseconds",
 		    "flowDurationMilliseconds",
 		    
 		    "sourceIPAddress",

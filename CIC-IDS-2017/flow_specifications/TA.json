@@ -1,11 +1,9 @@
 {
     "features": [
-        "flowStartSeconds",
+        "flowStartMilliseconds",
 
 	"sourceIPAddress",
         "destinationIPAddress",
-	"sourceTransportPort",
-	"destinationTransportPort",
 
         "__NTAFlowID",
         "__NTAProtocol",

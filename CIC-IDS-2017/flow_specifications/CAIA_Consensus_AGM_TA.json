@@ -170,7 +170,7 @@
 		    {"apply": [{"modeCount":[{"__NTATOff": ["__NTASecWindow"]}]},"backward"]}
 
 		            ],
-	"bidirectionnal":true,
+	"bidirectional":true,
         "key_features": [
             "sourceIPAddress",
 	    	"destinationIPAddress",
