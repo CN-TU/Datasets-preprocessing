@@ -13,7 +13,7 @@ SSHARGS:=-o ControlMaster=auto -o ControlPath=./.sshcontrol -o ControlPersist=10
 -include makeenv
 
 # set a few go-flows parameters explicitly to be on the safe side considering changing defaults
-GFARGS:=-active 1800 -idle 300 -sort start
+GFARGS:=-sort start
 
 
 all: ${VECTORS}

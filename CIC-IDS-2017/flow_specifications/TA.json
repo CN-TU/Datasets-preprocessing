@@ -19,6 +19,8 @@
         {"min": [{"__NTATOff": ["__NTASecWindow"]}]},
         {"count": [{"__NTATOn": ["__NTASecWindow"]}]}
     ],
+    "active_timeout": 1800,
+    "idle_timeout": 300,
     "bidirectional": false,
     "key_features": [
         "__timeWindow60s",

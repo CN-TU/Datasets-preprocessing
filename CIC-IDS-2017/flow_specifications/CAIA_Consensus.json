@@ -54,7 +54,8 @@
 				{"apply": ["tcpFinTotalCount", "backward"]},
 				{"apply": ["_tcpCwrTotalCount", "backward"]}
 			],
-
+			"active_timeout": 1800,
+			"idle_timeout": 300,
 			"bidirectional": true,
 			"key_features": [
 				"sourceIPAddress",

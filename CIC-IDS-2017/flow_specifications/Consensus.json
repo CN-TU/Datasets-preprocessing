@@ -34,7 +34,8 @@
 				{"apply": [{"median":["_interPacketTimeSeconds"]}, "backward"]},
 				{"apply": [{"variance":["_interPacketTimeSeconds"]}, "backward"]}
 			],
-		
+			"active_timeout": 1800,
+			"idle_timeout": 300,
 			"bidirectional": true,
 			"key_features": [
 				"sourceIPAddress",

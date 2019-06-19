@@ -34,7 +34,9 @@
 
 		    "packetTotalCount"
         ],
-	"bidirectionnal":false,
+	"active_timeout": 1800,
+	"idle_timeout": 300,
+	"bidirectional":false,
         "key_features": [
             "sourceIPAddress",
 	    "__timeWindow3600s"

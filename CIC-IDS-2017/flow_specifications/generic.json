@@ -45,7 +45,8 @@
 {"accumulate":[{"__NTATOff": ["__NTASecWindow"]}]}
 
 ],
-
+"active_timeout": 1800,
+"idle_timeout": 300,
 "bidirectional": false,
 "key_features": [
 "sourceIPv4Address",
