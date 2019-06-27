@@ -22,7 +22,7 @@ all: ${VECTORS}
 # rules for getting pcaps
 .sshcontrol:
 	read -p 'User for fileserver.cn.tuwien.ac.at: ' SSHUSER && ssh ${SSHARGS} $$SSHUSER@fileserver.cn.tuwien.ac.at :
-	
+
 %.pcap: .sshcontrol
 	scp ${SSHARGS} fileserver.cn.tuwien.ac.at:/home/cn_group/datasets/CIC-IDS-2017/PCAPs/$*.pcap .
 
@@ -34,8 +34,8 @@ all: ${VECTORS}
 
 Mega1_unlabeled.csv: flow_specifications/CAIA_Consensus_AGM_TA.json ${PCAPFILES}
 	${GOFLOWS} run ${GFARGS} features flow_specifications/CAIA_Consensus_AGM_TA.json export csv Mega1_unlabeled.csv source libpcap ${PCAPFILES}
-	
-	
+
+
 
 # rules for joining
 CAIAConAGM_unlabeled.csv: extra_preprocessing/join_CAIAConAGM.py CAIA_Consensus_unlabeled.csv AGM_10s_unlabeled.csv
@@ -52,10 +52,10 @@ Mega2_unlabeled.csv: extra_preprocessing/join_Mega.py CAIA_Consensus_unlabeled.c
 
 AGM_%.csv: labeling/labeling.py AGM_%_unlabeled.csv
 	${PYTHON} labeling/labeling.py AGM_$* AGM
-	
+
 TA.csv: labeling/labeling.py TA_unlabeled.csv
 	${PYTHON} labeling/labeling.py TA 2tuple
-	
+
 
 # misc
 ${VECTORS}: %: %.csv
@@ -66,5 +66,5 @@ clean:
 .PHONY: ${VECTORS} all clean
 
 # allow intermediate files to be deleted
-.SECONDARY: 
+.SECONDARY:
 
