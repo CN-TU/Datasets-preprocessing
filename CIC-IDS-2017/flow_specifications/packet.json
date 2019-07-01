@@ -1,0 +1,35 @@
+{
+	"version": "v2",
+	"preprocessing": {
+		"flows": [{
+			"features": [
+				"flowStartMilliseconds",
+				
+				"sourceIPAddress",
+				"destinationIPAddress",
+				"sourceTransportPort",
+				"destinationTransportPort",
+				"protocolIdentifier",
+				
+				{"accumulate": ["flowDirection"]},
+				{"accumulate": ["_interPacketTimeNanoseconds"]},
+				{"accumulate": ["ipTotalLength"]},
+				{"accumulate": ["ipTTL"]},
+				{"accumulate": ["ipClassOfService"]},
+				{"accumulate": ["_tcpFlags"]}
+
+			],
+
+			"active_timeout": 1800,
+			"idle_timeout": 300,
+			"bidirectional": true,
+			"key_features": [
+				"sourceIPAddress",
+				"destinationIPAddress",
+				"protocolIdentifier",
+				"sourceTransportPort",
+				"destinationTransportPort"
+			]
+		}]
+	}
+}

@@ -1,4 +1,4 @@
-VECTORS:=CAIA Consensus TA AGM_10s AGM_60s AGM_3600s CAIAConAGM Mega1 Mega2
+VECTORS:=CAIA Consensus TA AGM_10s AGM_60s AGM_3600s CAIAConAGM Mega1 Mega2 packet
 
 GOFLOWS?=go-flows
 PYTHON?=python3
