@@ -40,7 +40,8 @@ Each dataset contains the following sub-folders:
 
 ## Current Datasets
 
-  -  [CIC-IDS-2017](https://www.unb.ca/cic/datasets/ids-2017.html)
+  - [CIC-IDS-2017](https://www.unb.ca/cic/datasets/ids-2017.html)
+  - [UNSW-NB15](https://www.unsw.adfa.edu.au/unsw-canberra-cyber/cybersecurity/ADFA-NB15-Datasets/)
 
 
 ## Contact
