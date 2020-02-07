@@ -15,7 +15,7 @@ Analsysis means:
 
 ```
 .
-├── CIC-IDS-2017
+├── <dataset>
 │   ├── analysis
 │   ├── extra_preprocessing
 │   ├── flow_specifications
