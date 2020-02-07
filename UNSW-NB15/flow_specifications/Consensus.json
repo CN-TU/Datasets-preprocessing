@@ -1,0 +1,49 @@
+{
+	"version": "v2",
+	"preprocessing": {
+		"flows": [{
+			"features": [
+				"flowStartMilliseconds",
+				"flowDurationMilliseconds",
+
+				"sourceIPAddress",
+				"destinationIPAddress",
+				"sourceTransportPort",
+				"destinationTransportPort",
+				"protocolIdentifier",
+
+				{"apply": ["packetTotalCount", "forward"]},
+				{"apply": ["octetTotalCount", "forward"]},
+				
+				{"apply": [{"max":["ipTotalLength"]}, "forward"]},
+				{"apply": [{"mode":["ipTotalLength"]}, "forward"]},
+				{"apply": [{"median":["ipTotalLength"]}, "forward"]},
+				{"apply": [{"min":["ipTotalLength"]}, "forward"]},
+				
+				{"apply": [{"median":["_interPacketTimeSeconds"]}, "forward"]},
+				{"apply": [{"variance":["_interPacketTimeSeconds"]}, "forward"]},
+				
+				{"apply": ["packetTotalCount", "backward"]},
+				{"apply": ["octetTotalCount", "backward"]},
+				
+				{"apply": [{"max":["ipTotalLength"]}, "backward"]},
+				{"apply": [{"mode":["ipTotalLength"]}, "backward"]},
+				{"apply": [{"median":["ipTotalLength"]}, "backward"]},
+				{"apply": [{"min":["ipTotalLength"]}, "backward"]},
+				
+				{"apply": [{"median":["_interPacketTimeSeconds"]}, "backward"]},
+				{"apply": [{"variance":["_interPacketTimeSeconds"]}, "backward"]}
+			],
+			"active_timeout": 1800,
+			"idle_timeout": 300,
+			"bidirectional": true,
+			"key_features": [
+				"sourceIPAddress",
+				"destinationIPAddress",
+				"protocolIdentifier",
+				"sourceTransportPort",
+				"destinationTransportPort"
+			]
+		}]
+	}
+}

@@ -1,0 +1,66 @@
+{
+  "version": "v2",
+  "preprocessing": {
+    "flows": [
+      {
+        "features": [
+		    "flowStartMilliseconds",
+		    "flowDurationMilliseconds",
+		    
+		    "sourceIPAddress",
+                    "destinationIPAddress",
+            	    "sourceTransportPort",
+            	    "destinationTransportPort",
+            	    "protocolIdentifier",
+
+		    {"apply": ["packetTotalCount", "forward"]},
+		    {"apply": ["octetTotalCount", "forward"]},
+		    
+		    {"apply": [{"min":["ipTotalLength"]}, "forward"]},
+		    {"apply": [{"mean":["ipTotalLength"]}, "forward"]},
+		    {"apply": [{"max":["ipTotalLength"]}, "forward"]},
+		    {"apply": [{"stdev":["ipTotalLength"]}, "forward"]},
+		    
+		    {"apply": [{"min":["_interPacketTimeSeconds"]}, "forward"]},
+		    {"apply": [{"mean":["_interPacketTimeSeconds"]}, "forward"]},
+		    {"apply": [{"max":["_interPacketTimeSeconds"]}, "forward"]},
+		    {"apply": [{"stdev":["_interPacketTimeSeconds"]}, "forward"]},
+		    
+		    {"apply": ["tcpSynTotalCount", "forward"]},
+		    {"apply": ["tcpAckTotalCount", "forward"]},
+		    {"apply": ["tcpFinTotalCount", "forward"]},
+		    {"apply": ["_tcpCwrTotalCount", "forward"]},
+		    
+		    {"apply": ["packetTotalCount", "backward"]},
+		    {"apply": ["octetTotalCount", "backward"]},
+		    
+		    {"apply": [{"min":["ipTotalLength"]}, "backward"]},
+		    {"apply": [{"mean":["ipTotalLength"]}, "backward"]},
+		    {"apply": [{"max":["ipTotalLength"]}, "backward"]},
+		    {"apply": [{"stdev":["ipTotalLength"]}, "backward"]},
+		    
+		    {"apply": [{"min":["_interPacketTimeSeconds"]}, "backward"]},
+		    {"apply": [{"mean":["_interPacketTimeSeconds"]}, "backward"]},
+		    {"apply": [{"max":["_interPacketTimeSeconds"]}, "backward"]},
+		    {"apply": [{"stdev":["_interPacketTimeSeconds"]}, "backward"]},
+		    
+		    {"apply": ["tcpSynTotalCount", "backward"]},
+		    {"apply": ["tcpAckTotalCount", "backward"]},
+		    {"apply": ["tcpFinTotalCount", "backward"]},
+		    {"apply": ["_tcpCwrTotalCount", "backward"]}
+		    
+        ],
+	"active_timeout": 1800,
+	"idle_timeout": 300,
+	"bidirectional": true,
+	"key_features": [
+		"sourceIPAddress",
+		"destinationIPAddress",
+		"protocolIdentifier",
+		"sourceTransportPort",
+		"destinationTransportPort"
+	]
+      }
+    ]
+  }
+}

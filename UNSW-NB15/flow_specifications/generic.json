@@ -1,0 +1,61 @@
+{
+"version": "v2",
+"preprocessing": {
+"flows": [
+{
+"features": [
+"flowStartSeconds",
+"flowDirection",
+"destinationTransportPort",
+"destinationIPAddress",
+"sourceIPAddress",
+"sourceTransportPort",
+"protocolIdentifier",
+
+"ethernetType",
+
+"flowStartMicroseconds",
+"flowEndMicroseconds",
+"flowDurationMicroseconds",
+
+"flowEndReason",
+
+{"accumulate":["ipClassOfService"]},
+
+{"accumulate":["ipTTL"]},
+{"accumulate":["ipTotalLength"]},
+{"accumulate":["layer2OctetTotalCount"]},
+{"accumulate":["_interPacketTimeMilliseconds"]},
+
+"packetTotalCount",
+"__NTATData",
+
+{"accumulate":["tcpAckTotalCount"]},
+{"accumulate":["tcpControlBits"]},
+{"accumulate":["tcpFinTotalCount"]},
+{"accumulate":["tcpPshTotalCount"]},
+{"accumulate":["tcpRstTotalCount"]},
+{"accumulate":["tcpSynTotalCount"]},
+{"accumulate":["tcpUrgTotalCount"]},
+{"accumulate":["_tcpCwrTotalCount"]},
+{"accumulate":["_tcpEceTotalCount"]},
+"_tcpFlags",
+
+{"accumulate":[{"__NTATOn": ["__NTASecWindow"]}]},
+{"accumulate":[{"__NTATOff": ["__NTASecWindow"]}]}
+
+],
+"active_timeout": 1800,
+"idle_timeout": 300,
+"bidirectional": false,
+"key_features": [
+"sourceIPv4Address",
+"destinationIPv4Address",
+"protocolIdentifier",
+"sourceTransportPort",
+"destinationTransportPort"
+]
+}
+]
+}
+}

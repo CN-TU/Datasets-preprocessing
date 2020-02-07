@@ -1,0 +1,30 @@
+{
+    "features": [
+        "flowStartMilliseconds",
+
+	"sourceIPAddress",
+        "destinationIPAddress",
+
+        "__NTAFlowID",
+        "__NTAProtocol",
+        "__NTAPorts",
+        "__NTATData",
+        "packetTotalCount",
+        {"count": ["__NTASecWindow"]},
+        {"divide": ["__NTATData", {"count": ["__NTASecWindow"]}]},
+        {"divide": ["packetTotalCount", {"count": ["__NTASecWindow"]}]},
+        {"max": [{"__NTATOn": ["__NTASecWindow"]}]},
+        {"min": [{"__NTATOn": ["__NTASecWindow"]}]},
+        {"max": [{"__NTATOff": ["__NTASecWindow"]}]},
+        {"min": [{"__NTATOff": ["__NTASecWindow"]}]},
+        {"count": [{"__NTATOn": ["__NTASecWindow"]}]}
+    ],
+    "active_timeout": 1800,
+    "idle_timeout": 300,
+    "bidirectional": false,
+    "key_features": [
+        "__timeWindow60s",
+        "sourceIPAddress",
+        "destinationIPAddress"
+    ]
+}
