@@ -60,6 +60,45 @@ def setting_label_5tuple(sip="", dip="", sport="", dport="", st="", et="", attac
 								   attack, data['Attack'])
 		return
 		
+def setting_label_5tuple_bidirectional(sip="", dip="", sport="", dport="", st="", et="", attack=""):
+	
+	print(">> Adding {}".format(attack))
+
+	if sip and dip and dport:
+		data['Attack'] = np.where((data['sourceIPAddress'] == sip) & 
+								  (data['destinationIPAddress'] == dip) &
+								  (data['destinationTransportPort'] == int(dport)) &
+								  (data['flowStartMilliseconds']/1000 > st) &
+								  (data['flowStartMilliseconds']/1000 < et),
+								   attack, data['Attack'])
+		return
+
+	if sip and dip:
+
+		if attack in ['Infiltration:Dropbox download', 'Infiltration:Cool disk']:
+			sip, dip = dip, sip
+
+		data['Attack'] = np.where((data['sourceIPAddress'] == sip) & 
+								  (data['destinationIPAddress'] == dip) &
+								  (data['flowStartMilliseconds']/1000 > st) &
+								  (data['flowStartMilliseconds']/1000 < et),
+								   attack, data['Attack'])
+		return
+
+	if sip:
+		data['Attack'] = np.where((data['sourceIPAddress'] == sip) &
+								  (data['flowStartMilliseconds']/1000 > st) &
+								  (data['flowStartMilliseconds']/1000 < et),
+								   attack, data['Attack'])
+		return
+
+	if dip:
+		data['Attack'] = np.where((data['destinationIPAddress'] == dip) &
+								  (data['flowStartMilliseconds']/1000 > st) &
+								  (data['flowStartMilliseconds']/1000 < et),
+								   attack, data['Attack'])
+		return
+
 def setting_label_cisco(sip="", dip="", sport="", dport="", st="", et="", attack=""):
 	
 	print(">> Adding {}".format(attack))
@@ -146,6 +185,7 @@ print(">> Welcome to the labeling script <<")
 
 modes = {
 	'5tuple': setting_label_5tuple,
+	'5tuplebi': setting_label_5tuple_bidirectional,
 	'2tuple': setting_label_2tuple,
 	'cisco': setting_label_cisco,
 	'AGM': setting_label_AGM,
@@ -189,7 +229,7 @@ setting_label(sip="172.16.0.1", dip="192.168.10.50",
 
 ##################################################################
 
-setting_label(sip="172.16.0.1", dip="192.168.10.51",
+setting_label(sip="172.16.0.1", dip="192.168.10.50",
 	          st=time_fixing(6, 9, 18), et=time_fixing(6, 10, 2),
 	          attack="Web Attack:Brute Force")
 
@@ -201,7 +241,7 @@ setting_label(sip="172.16.0.1", dip="192.168.10.50",
 	          st=time_fixing(6, 10, 38), et=time_fixing(6, 10, 44),
 	          attack="Web Attack:Sql Injection")
 
-setting_label(sip="172.16.0.1", dip="192.168.10.8", 
+setting_label(sip="205.174.165.73", dip="192.168.10.8", 
 	          st=time_fixing(6, 14, 17), et=time_fixing(6, 14, 37),
 	          attack="Infiltration:Dropbox download")
 
