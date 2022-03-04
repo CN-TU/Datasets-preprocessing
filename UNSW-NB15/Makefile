@@ -4,8 +4,8 @@ GOFLOWS?=go-flows
 PYTHON?=python3
 DATASET?=
 
-PCAPS2201:=$(addprefix "UNSW-NB15 Source-Files"/"UNSW-NB15 - pcap files"/"pcaps 22-1-2015"/, $(addsuffix .pcap, $(shell seq 53)))
-PCAPS1702:=$(addprefix "UNSW-NB15 Source-Files"/"UNSW-NB15 - pcap files"/"pcaps 17-2-2015"/, $(addsuffix .pcap, $(shell seq 27)))
+PCAPS2201:=$(addprefix \*22-1-2015/, $(addsuffix .pcap, $(shell seq 53)))
+PCAPS1702:=$(addprefix \*17-2-2015/, $(addsuffix .pcap, $(shell seq 27)))
 FILELIST:=${PCAPS2201} ${PCAPS1702}
 
 
@@ -35,6 +35,8 @@ else
 
 UNZIP_CMD=unzip -p ${DATASET}/UNSW-NB15_Source-files.zip
 GROUNDTRUTH=${DATASET}/UNSW-NB15_GT.csv
+
+.sshcontrol:
 
 endif
 
