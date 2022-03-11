@@ -12,7 +12,7 @@ For instance, `make CAIA` produces a `CAIA.csv` with preprocessed, labeled flows
 If the [go-flows](https://github.com/CN-TU/go-flows) binary is not contained in the path, its location can be provided by
 the `GOFLOWS` environment variable. Environment variables can alternatively be specified in a file called `makeenv`.
 
-### Usage from without the CN network
+### Usage from outside the CN network
 You can obtain a local copy of the dataset from [the dataset authors](https://www.unb.ca/cic/datasets/ids-2017.html). To reproduce the labeled csvs from a local copy, point the `DATASET` environment variable to the
 directory containing the `*.pcap` files. For instance, `DATASET=. make CAIA` generates the labeled dataset for the CAIA feature vector if you download the `*.pcap` files to the directory where the `Makefile` is located.
 

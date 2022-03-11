@@ -13,9 +13,9 @@ For instance, `make CAIA` produces a `CAIA.csv` with preprocessed, labeled flows
 If the [go-flows](https://github.com/CN-TU/go-flows) binary is not contained in the path, its location can be provided by
 the `GOFLOWS` environment variable. Environment variables can alternatively be specified in a file called `makeenv`.
 
-### Usage from without the CN network
+### Usage from outside the CN network
 You can obtain a local copy of the dataset from [the dataset authors](https://www.unsw.adfa.edu.au/unsw-canberra-cyber/cybersecurity/ADFA-NB15-Datasets/). To reproduce the labeled csvs from a local copy, point the `DATASET` environment variable to the
-directory containing the `UNSW-NB15_Source-files.zip` and `UNSW-NB15_GT.csv`. For instance, `DATASET=. make CAIA` generates the labeled dataset for the CAIA feature vector if you download the files to the directory where the `Makefile` is located.
+directory containing the file `UNSW-NB15_Source-files.zip`. For instance, `DATASET=. make CAIA` generates the labeled dataset for the CAIA feature vector if you download the file to the directory where the `Makefile` is located.
 
 # Known dataset issues
 * The ground truth file contains several duplicates entries and matching with flows from the provided pcaps is difficult.

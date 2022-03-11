@@ -27,18 +27,20 @@ if goflows_pid == 0:
 	for rfd,wfd in fds:
 		os.close(rfd)
 		os.close(wfd)
-	os.execvp(goflows, params + [ '/proc/%d/fd/%d' % (pid, fd[0]) for fd in fds ])
+	try:
+		os.execvp(goflows, params + [ '/proc/%d/fd/%d' % (pid, fd[0]) for fd in fds ])
+	except OSError:
+		print('Failed to execute file %s' % goflows, file=sys.stderr)
+		raise
 	
 for (rfd, wfd), filename in zip(fds, filelist):
 	cmd = '%s %s' % (unzip_cmd, filename.replace(' ', '\\\\ '))
 	print (cmd)
-	return_value = subprocess.call(shlex.split(cmd), stdout=wfd)
-	if return_value != 0:
-		os.exit(return_value)
+	subprocess.check_call(shlex.split(cmd), stdout=wfd)
 	os.close(rfd)
 	os.close(wfd)
 	
 _, status = os.waitpid(goflows_pid, 0)
 
 if status != 0:
-	os.exit(1)
+	sys.exit(1)
